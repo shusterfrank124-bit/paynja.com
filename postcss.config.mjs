@@ -1,0 +1,1 @@
+const config = { plugins: { tailwindcss: {}, autoprefixer: {} } };\nexport default config;
