@@ -1,1 +1,2 @@
-const nextConfig = { reactStrictMode: true };\nexport default nextConfig;
+const nextConfig = { reactStrictMode: true };
+export default nextConfig;
