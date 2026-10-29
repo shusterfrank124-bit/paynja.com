@@ -1,16 +1,39 @@
 "use client";
 import {createContext,useContext,useEffect,useMemo,useState,type ReactNode} from "react";
 import {supabase} from "../lib/supabase";
+import {tr} from "./dashboard-translations";
 export const PAYINJA_LOCALES=[
  ["en-GB","English (UK)"],["en-US","English (US)"],["en-CA","English (Canada)"],["en-AU","English (Australia)"],["fil","Filipino"],["th","ไทย"],["ms","Bahasa Melayu"],["id","Bahasa Indonesia"],["zh-CN","简体中文"],["zh-TW","繁體中文"],["hi","हिन्दी"],["ur","اردو"],["bn","বাংলা"],["es","Español"],["pt","Português"],["pt-BR","Português (Brasil)"],["it","Italiano"],["de","Deutsch"],["fr","Français"],["nl","Nederlands"],["ar","العربية"],["ja","日本語"],["ko","한국어"],["vi","Tiếng Việt"],["ru","Русский"],["tr","Türkçe"],["pl","Polski"],["uk","Українська"],["sv","Svenska"],["no","Norsk"],["da","Dansk"],["fi","Suomi"],["el","Ελληνικά"],["cs","Čeština"],["hu","Magyar"],["ro","Română"],["he","עברית"],["sw","Kiswahili"]
 ] as const;
 type Locale=typeof PAYINJA_LOCALES[number][0];
 type LocaleContextValue={locale:string;setLocale:(locale:string)=>Promise<void>;ready:boolean};
 const LocaleContext=createContext<LocaleContextValue>({locale:"en-GB",setLocale:async()=>{},ready:false});
+function translateDocument(locale:string){
+ const originals=new WeakMap<Text,string>();
+ const translateNode=(node:Node)=>{
+  if(node.nodeType===Node.TEXT_NODE){
+   const textNode=node as Text;
+   const original=originals.get(textNode)??textNode.nodeValue??"";
+   if(!original.trim())return;
+   originals.set(textNode,original);
+   const translated=tr(locale,original);
+   if(textNode.nodeValue!==translated)textNode.nodeValue=translated;
+  } else if(node instanceof HTMLElement){
+   if(["SCRIPT","STYLE","NOSCRIPT"].includes(node.tagName))return;
+   for(const attr of ["placeholder","aria-label","title"]){const value=node.getAttribute(attr);if(value){const key="data-payinja-original-"+attr;if(!node.hasAttribute(key))node.setAttribute(key,value);const source=node.getAttribute(key)||value;node.setAttribute(attr,tr(locale,source));}}
+   node.childNodes.forEach(translateNode);
+  }
+ };
+ const root=document.body;
+ root.childNodes.forEach(translateNode);
+ const observer=new MutationObserver(records=>records.forEach(record=>{record.addedNodes.forEach(translateNode);if(record.type==="characterData")translateNode(record.target);}));
+ observer.observe(root,{subtree:true,childList:true,characterData:true});
+ return()=>observer.disconnect();
+}
 function writeCookie(locale:string){document.cookie=`payinja_locale=${encodeURIComponent(locale)}; Path=/; Max-Age=31536000; SameSite=Lax`;document.documentElement.lang=locale;document.documentElement.dir=["ar","he","ur"].includes(locale)?"rtl":"ltr";}
 export function LocaleProvider({initialLocale,children}:{initialLocale:string;children:ReactNode}){
  const [locale,setLocaleState]=useState<string>(initialLocale||"en-GB");
- const [ready,setReady]=useState(false);
+ const [ready,setReady]=useState(false);\n useEffect(()=>translateDocument(locale),[locale]);
  useEffect(()=>{
   let alive=true;
   const sync=async()=>{
