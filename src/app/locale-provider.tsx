@@ -33,7 +33,8 @@ function translateDocument(locale:string){
 function writeCookie(locale:string){document.cookie=`payinja_locale=${encodeURIComponent(locale)}; Path=/; Max-Age=31536000; SameSite=Lax`;document.documentElement.lang=locale;document.documentElement.dir=["ar","he","ur"].includes(locale)?"rtl":"ltr";}
 export function LocaleProvider({initialLocale,children}:{initialLocale:string;children:ReactNode}){
  const [locale,setLocaleState]=useState<string>(initialLocale||"en-GB");
- const [ready,setReady]=useState(false);\n useEffect(()=>translateDocument(locale),[locale]);
+ const [ready,setReady]=useState(false);
+ useEffect(()=>translateDocument(locale),[locale]);
  useEffect(()=>{
   let alive=true;
   const sync=async()=>{
