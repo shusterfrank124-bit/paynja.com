@@ -3,13 +3,20 @@
 @tailwind utilities;
 :root{color-scheme:dark}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:#050811;color:#f8fafc;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-button,a{font:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:6rem}
+body{margin:0;background:#050811;color:#f8fafc;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow-x:hidden}
+button,a,select,input{font:inherit}
 a{color:inherit;text-decoration:none}
-button{cursor:pointer}
+button{cursor:pointer;touch-action:manipulation}
 ::selection{background:#08d9f2;color:#041018}
 .gradient{background:linear-gradient(105deg,#c084fc 0%,#08d9f2 54%,#00e5a0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .glass{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.105);backdrop-filter:blur(20px)}
 .grid-glow{background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
 .cta{background:linear-gradient(105deg,#a855f7,#08d9f2 55%,#00e5a0);color:#031014;font-weight:750;box-shadow:0 10px 35px rgba(8,217,242,.12)}
+.payinja-sidebar{position:fixed;inset:0 auto 0 0;width:16rem;overflow-y:auto;overscroll-behavior:contain}
+.payinja-admin-sidebar{position:fixed;inset:0 auto 0 0;width:16rem;overflow-y:auto;overscroll-behavior:contain}
+.payinja-customer-content{margin-left:16rem;min-width:0;width:calc(100% - 16rem)}
+.payinja-admin-content{margin-left:16rem;min-width:0;width:calc(100% - 16rem)}
+.payinja-topbar{position:sticky;top:0;z-index:30;margin:-1.25rem -1rem 0;padding:1rem;background:rgba(7,17,31,.88);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(18px)}
+@media(max-width:767px){.payinja-sidebar,.payinja-admin-sidebar{display:none}.payinja-customer-content,.payinja-admin-content{margin-left:0;width:100%}.payinja-topbar{margin:-1.25rem -1rem 0;padding:.8rem 1rem}.payinja-mobile-bottom{padding-bottom:calc(5rem + env(safe-area-inset-bottom))}.payinja-bottom-nav{padding-bottom:calc(.5rem + env(safe-area-inset-bottom))}}
+@media(min-width:768px){.payinja-mobile-bottom{padding-bottom:2rem}}
